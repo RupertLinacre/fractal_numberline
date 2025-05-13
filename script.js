@@ -21,10 +21,15 @@ document.addEventListener('DOMContentLoaded', function () {
     // ====================================================================
     // 2. SETUP
     // ====================================================================
+
     const svg = d3.select("#axis-svg");
     const svgNode = svg.node();
-    const containerWidth = svgNode.getBoundingClientRect().width;
-    let availableWidth = containerWidth - CONFIG.margins.left - CONFIG.margins.right;
+    function getAvailableWidth() {
+        // Always use the full viewport width minus margins
+        return window.innerWidth - CONFIG.margins.left - CONFIG.margins.right;
+    }
+    let availableWidth = getAvailableWidth();
+
 
     const baseScale = d3.scaleLinear()
         .domain(CONFIG.initialDomain)
@@ -34,6 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const chartArea = svg.append("g")
         .attr("transform", `translate(${CONFIG.margins.left}, ${CONFIG.margins.top})`);
+
 
     const axisLine = chartArea.append("line")
         .attr("class", "axis-line")
@@ -156,17 +162,18 @@ document.addEventListener('DOMContentLoaded', function () {
     // 6. INITIAL DRAW & RESIZE HANDLING
     // ====================================================================
     function initializeAxis() {
+        availableWidth = getAvailableWidth();
+        svg.attr("width", window.innerWidth).attr("height", 200);
+        baseScale.range([0, availableWidth]);
+        axisLine.attr("x2", availableWidth);
         const currentTransform = d3.zoomTransform(svgNode);
         updateAxis(currentTransform);
     }
 
     initializeAxis();
 
-    // Optional: Add a resize listener
-    // window.addEventListener('resize', () => {
-    //    availableWidth = svgNode.getBoundingClientRect().width - CONFIG.margins.left - CONFIG.margins.right;
-    //    baseScale.range([0, availableWidth]);
-    //    axisLine.attr("x2", availableWidth);
-    //    initializeAxis();
-    // });
+    // Responsive: redraw on resize
+    window.addEventListener('resize', () => {
+        initializeAxis();
+    });
 });

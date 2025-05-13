@@ -10,25 +10,33 @@ h1, p {
 }
 
 #chart-container {
-   width: 95%;
-   max-width: 1000px; /* Max width for better layout on large screens */
-   margin: 20px auto;
-   height: 200px;
-   border: 1px solid #ccc;
-   overflow: hidden; /* Hide anything drawn outside */
-   background-color: #fdfdfd;
-   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  position: fixed;
+  top: 24px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 200px;
+  margin: 0;
+  border: none;
+  background: transparent;
+  z-index: 1;
+  pointer-events: none; /* Let SVG handle pointer events */
 }
 
 #axis-svg {
   display: block;
-  width: 100%;
-  height: 100%;
-   /* Prevent default browser actions on touch/drag */
+  width: 100vw;
+  height: 200px;
   touch-action: none;
   user-select: none;
   -webkit-user-drag: none;
   -webkit-tap-highlight-color: transparent;
+  background: #fdfdfd;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  border: 1px solid #ccc;
+  margin: 0 auto;
+  pointer-events: auto;
 }
 
 .axis-line {
@@ -43,11 +51,12 @@ h1, p {
    shape-rendering: crispEdges;
 }
 
+
 .tick text {
   fill: #333;
   text-anchor: middle;
   dominant-baseline: hanging;
-  font-size: 10px; /* Base font size for minor ticks - this gets scaled */
+  font-size: 16px; /* Increased base font size for minor ticks - this gets scaled */
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
 }
 
@@ -55,9 +64,10 @@ h1, p {
    stroke-width: 1.5px; /* Base stroke width for major */
    stroke: black;
 }
- .tick.major text {
+
+.tick.major text {
    font-weight: bold;
-   font-size: 11px; /* Base font size for major ticks - this gets scaled */
+   font-size: 18px; /* Increased base font size for major ticks - this gets scaled */
  }
 
  /* Optional: Hide minor tick labels if they are scaled very small to reduce clutter */
