@@ -4,13 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D3 Zoomable 1D Axis</title>
+    <title>D3 Zoomable 1D Axis - Advanced Scaling</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-    <h1>Zoomable 1D Axis</h1>
+    <h1>Zoomable 1D Axis with Dynamic Tick Scaling</h1>
     <p>Use Mouse Wheel or Touch/Pinch to Zoom. Click-Drag to Pan.</p>
+    <p>Ticks and labels start small when they first appear at a new level of detail, then grow to full size as you zoom
+        into that level.</p>
     <div id="chart-container">
         <svg id="axis-svg"></svg>
     </div>

@@ -1,14 +1,23 @@
 body {
     font-family: sans-serif;
     margin: 20px;
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+h1, p {
+    text-align: center;
 }
 
 #chart-container {
    width: 95%;
+   max-width: 1000px; /* Max width for better layout on large screens */
+   margin: 20px auto;
    height: 200px;
    border: 1px solid #ccc;
    overflow: hidden; /* Hide anything drawn outside */
-   background-color: #f9f9f9;
+   background-color: #fdfdfd;
+   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 #axis-svg {
@@ -29,25 +38,27 @@ body {
 
 /* Styling applied BEFORE inner <g> scaling */
 .tick line {
-   stroke: #333;
-   stroke-width: 1px;
-    shape-rendering: crispEdges;
+   stroke: #444; /* Slightly lighter than major for differentiation */
+   stroke-width: 1px; /* Base stroke width */
+   shape-rendering: crispEdges;
 }
 
 .tick text {
-  fill: #222;
+  fill: #333;
   text-anchor: middle;
-  /* dominant-baseline is better for vertical alignment */
   dominant-baseline: hanging;
-  font-size: 10px; /* Base size - this gets scaled by the transform */
-  font-family: monospace;
+  font-size: 10px; /* Base font size for minor ticks - this gets scaled */
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
 }
 
 .tick.major line {
-   stroke-width: 1.5px;
+   stroke-width: 1.5px; /* Base stroke width for major */
    stroke: black;
 }
  .tick.major text {
    font-weight: bold;
-    font-size: 11px; /* Base size for Majors */
+   font-size: 11px; /* Base font size for major ticks - this gets scaled */
  }
+
+ /* Optional: Hide minor tick labels if they are scaled very small to reduce clutter */
+ /* .tick.minor.very-small-visual text { display: none; } */
