@@ -147,15 +147,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 const visualScale = d.isMajor ? 1.0 : minorTickVisualScale;
                 tickContent.attr("transform", `scale(${visualScale})`);
 
-                tickContent.select("line")
-                    .attr("y1", 0)
-                    .attr("y2", d.isMajor ? STATIC_CONFIG.baseMajorTickLength : STATIC_CONFIG.baseMinorTickLength);
 
+                // Center ticks on the axis: extend equally above and below
+                const tickLength = d.isMajor ? STATIC_CONFIG.baseMajorTickLength : STATIC_CONFIG.baseMinorTickLength;
+                tickContent.select("line")
+                    .attr("y1", -tickLength / 2)
+                    .attr("y2", tickLength / 2);
+
+                // Place label below the axis, just below the tick
                 const textBaseLength = d.isMajor ? STATIC_CONFIG.baseMajorTickLength : STATIC_CONFIG.baseMinorTickLength;
                 const scaledTextPushDown = (visualScale < (APP_CONFIG.minorTickEmergenceScale + 0.1) && !d.isMajor) ? (2 / visualScale) : 0;
 
                 tickContent.select("text")
-                    .attr("y", textBaseLength + scaledTextPushDown + 2)
+                    .attr("y", (tickLength / 2) + scaledTextPushDown + 2)
                     .style("font-size", d.isMajor ? `${APP_CONFIG.maxMajorLabelFontSizePx}px` : `${APP_CONFIG.maxMinorLabelFontSizePx}px`)
                     .text(format(d.value));
             });
