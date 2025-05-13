@@ -4,17 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fractal Zoomable Number Line</title>
+    <title>D3 Zoomable 1D Axis</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-    <h1>Fractal Zoomable Number Line</h1>
+    <h1>Zoomable 1D Axis</h1>
+    <p>Use Mouse Wheel or Touch/Pinch to Zoom. Click-Drag to Pan.</p>
     <div id="chart-container">
-        <!-- SVG will be appended here by D3 -->
+        <svg id="axis-svg"></svg>
     </div>
 
-    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <!-- Load D3.js -->
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+
+    <!-- Load Application Script -->
     <script src="script.js"></script>
 </body>
 
