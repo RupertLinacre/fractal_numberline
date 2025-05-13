@@ -1,0 +1,62 @@
+body {
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px;
+}
+
+#chart-container {
+    width: 90%;
+    max-width: 1000px; /* Or adjust as needed */
+    border: 1px solid #ccc; /* Optional: visualize container */
+    overflow: hidden; /* Important for containing the SVG */
+    cursor: grab; /* Indicate pannable */
+}
+
+#chart-container:active {
+    cursor: grabbing;
+}
+
+svg {
+    display: block; /* Prevents extra space below SVG */
+    background-color: #f9f9f9;
+}
+
+.baseline {
+    stroke: #333;
+    stroke-width: 2px;
+    shape-rendering: crispEdges; /* Keep it sharp */
+}
+
+.tick line {
+    stroke: #555;
+    shape-rendering: crispEdges; /* Keep ticks sharp */
+}
+
+.tick text {
+    fill: #333;
+    text-anchor: middle;
+    dominant-baseline: hanging; /* Position text above the line */
+    cursor: default; /* Override grab cursor */
+    user-select: none; /* Prevent text selection */
+    /* Base font sizes will be set via attributes in JS */
+}
+
+/* Specific styles for major/minor ticks */
+.tick.major line {
+    stroke-width: 1.5px; /* Base stroke width */
+}
+
+.tick.minor line {
+    stroke-width: 0.75px; /* Base stroke width */
+}
+
+/* Base font sizes are set in JS, but you could add fallbacks */
+.tick.major text {
+    /* font-size: 12px; */ /* Base size set in JS */
+}
+
+.tick.minor text {
+    /* font-size: 10px; */ /* Base size set in JS */
+}
