@@ -4,17 +4,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D3 Zoomable 1D Axis - Advanced Scaling</title>
+    <title>Simplified Zoomable 1D Axis</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-    <h1>Zoomable 1D Axis with Dynamic Tick Scaling</h1>
-    <p>Use Mouse Wheel or Touch/Pinch to Zoom. Click-Drag to Pan.</p>
-    <p>Ticks and labels start small when they first appear at a new level of detail, then grow to full size as you zoom
-        into that level.</p>
+    <header>
+        <h1>Zoomable 1D Axis</h1>
+        <p>Use Mouse Wheel or Touch/Pinch to Zoom. Click-Drag to Pan.</p>
+        <p>Minor ticks and their labels emerge small and grow to full size as you zoom in.</p>
+    </header>
+
     <div id="chart-container">
         <svg id="axis-svg"></svg>
+    </div>
+
+    <div class="config-panel-container">
+        <div id="config-panel">
+            <h2>Configuration</h2>
+            <div class="control-group">
+                <label for="minorTickEmergenceScale">Minor Tick Emergence Scale (0.01-1): <span
+                        id="minorTickEmergenceScaleValue"></span></label>
+                <input type="range" id="minorTickEmergenceScale" data-config-key="minorTickEmergenceScale" min="0.01"
+                    max="1" step="0.01">
+                <small>Initial visual scale of newly appearing minor ticks relative to their full size.</small>
+            </div>
+            <div class="control-group">
+                <label for="minorTickFullScalePixelSeparation">Minor Tick Full Scale Separation (px): <span
+                        id="minorTickFullScalePixelSeparationValue"></span></label>
+                <input type="range" id="minorTickFullScalePixelSeparation"
+                    data-config-key="minorTickFullScalePixelSeparation" min="20" max="300" step="1">
+                <small>Screen distance (pixels) between minor ticks at which they reach full visual size. Lower values
+                    make them grow faster.</small>
+            </div>
+            <div class="control-group">
+                <label for="maxMajorLabelFontSizePx">Major Label Font Size (px): <span
+                        id="maxMajorLabelFontSizePxValue"></span></label>
+                <input type="range" id="maxMajorLabelFontSizePx" data-config-key="maxMajorLabelFontSizePx" min="8"
+                    max="48" step="1">
+                <small>Font size for major tick labels when at full visual scale.</small>
+            </div>
+            <div class="control-group">
+                <label for="maxMinorLabelFontSizePx">Minor Label Font Size (px): <span
+                        id="maxMinorLabelFontSizePxValue"></span></label>
+                <input type="range" id="maxMinorLabelFontSizePx" data-config-key="maxMinorLabelFontSizePx" min="8"
+                    max="48" step="1">
+                <small>Base font size for minor tick labels (this size is then scaled by their emergence
+                    factor).</small>
+            </div>
+        </div>
     </div>
 
     <!-- Load D3.js -->

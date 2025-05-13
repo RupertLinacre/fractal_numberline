@@ -1,42 +1,110 @@
 body {
-    font-family: sans-serif;
-    margin: 20px;
-    background-color: #f0f0f0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    margin: 0;
+    background-color: #f4f7f6;
     color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
-h1, p {
+header {
+    padding: 10px 20px;
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+header h1, header p {
     text-align: center;
+    margin-bottom: 0.5em;
+}
+header h1 {
+    margin-top: 0.2em;
+    color: #2c3e50;
 }
 
 #chart-container {
-  position: fixed;
-  top: 24px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100vw;
-  height: 200px;
-  margin: 0;
-  border: none;
-  background: transparent;
-  z-index: 1;
-  pointer-events: none; /* Let SVG handle pointer events */
+   width: 100%;
+   min-height: 200px;
+   height: 30vh;
+   border-top: 1px solid #ccc;
+   border-bottom: 1px solid #ccc;
+   overflow: hidden;
+   background-color: #fdfdfd;
+   box-shadow: inset 0 1px 3px rgba(0,0,0,0.05), inset 0 -1px 3px rgba(0,0,0,0.05);
+   box-sizing: border-box;
 }
 
 #axis-svg {
   display: block;
-  width: 100vw;
-  height: 200px;
+  width: 100%;
+  height: 100%;
   touch-action: none;
   user-select: none;
   -webkit-user-drag: none;
   -webkit-tap-highlight-color: transparent;
-  background: #fdfdfd;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  border: 1px solid #ccc;
-  margin: 0 auto;
-  pointer-events: auto;
+  cursor: grab;
+}
+#axis-svg:active {
+    cursor: grabbing;
+}
+
+.config-panel-container {
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    flex-grow: 1;
+}
+
+#config-panel {
+    background-color: #fff;
+    padding: 20px 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 600px;
+    box-sizing: border-box;
+}
+
+#config-panel h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #34495e;
+    text-align: center;
+    font-size: 1.5em;
+}
+
+.control-group {
+    margin-bottom: 20px;
+}
+
+.control-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    font-size: 0.95em;
+    color: #555;
+}
+.control-group label span {
+    font-weight: bold;
+    color: #2980b9;
+}
+
+.control-group input[type="range"] {
+    width: 100%;
+    margin-top: 4px;
+}
+.control-group small {
+    display: block;
+    font-size: 0.85em;
+    color: #777;
+    margin-top: 5px;
+    line-height: 1.3;
 }
 
 .axis-line {
@@ -44,31 +112,24 @@ h1, p {
     stroke-width: 2px;
 }
 
-/* Styling applied BEFORE inner <g> scaling */
 .tick line {
-   stroke: #444; /* Slightly lighter than major for differentiation */
-   stroke-width: 1px; /* Base stroke width */
+   stroke: #444;
+   stroke-width: 1px;
    shape-rendering: crispEdges;
 }
-
 
 .tick text {
   fill: #333;
   text-anchor: middle;
   dominant-baseline: hanging;
-  font-size: 16px; /* Increased base font size for minor ticks - this gets scaled */
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  /* font-weight is not bold for major ticks anymore */
 }
 
 .tick.major line {
-   stroke-width: 1.5px; /* Base stroke width for major */
+   stroke-width: 1.5px; /* Major ticks can still have a thicker line */
    stroke: black;
 }
-
-.tick.major text {
-   font-weight: bold;
-   font-size: 18px; /* Increased base font size for major ticks - this gets scaled */
- }
-
- /* Optional: Hide minor tick labels if they are scaled very small to reduce clutter */
- /* .tick.minor.very-small-visual text { display: none; } */
+/* .tick.major text { */
+   /* font-weight: bold; Removed as per request */
+ /* } */
