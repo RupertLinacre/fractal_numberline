@@ -8,9 +8,9 @@ document.addEventListener('DOMContentLoaded', function () {
         margins: { top: 70, right: 40, bottom: 70, left: 40 },
         epsilon: 1e-9,
         d3ZoomScaleExtent: [1e-7, 1e7], // Min/max zoom factor for D3
-        baseMajorTickLength: 10,     // Fixed: Length of major ticks at full visual scale
-        baseMinorTickLength: 6,      // Fixed: Length of minor ticks at full visual scale
-        targetMajorTicksOnScreen: 7, // Fixed: Desired approximate number of major ticks visible
+        baseMajorTickLength: 30,     // Fixed: Length of major ticks at full visual scale
+        baseMinorTickLength: 20,      // Fixed: Length of minor ticks at full visual scale
+        targetMajorTicksOnScreen: 3, // Fixed: Desired approximate number of major ticks visible
     };
 
     // User-configurable parameters with their defaults
