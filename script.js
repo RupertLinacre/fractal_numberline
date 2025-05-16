@@ -36,8 +36,30 @@ document.addEventListener('DOMContentLoaded', function () {
         .attr("class", "axis-line")
         .attr("y1", 0).attr("y2", 0);
 
+
     const ticksContainer = chartArea.append("g")
         .attr("class", "ticks-container");
+
+    // Center marker SVG elements
+    let centerMarkerGroup, centerMarkerLine, centerMarkerText;
+
+    // Create and style center marker elements
+    centerMarkerGroup = chartArea.append("g")
+        .attr("class", "center-marker");
+
+    centerMarkerLine = centerMarkerGroup.append("line")
+        .attr("stroke", "red")
+        .attr("stroke-width", 1)
+        .attr("y1", -50)
+        .attr("y2", 80); // 50 + 30 = 80 px below axis
+
+    centerMarkerText = centerMarkerGroup.append("text")
+        .attr("fill", "red")
+        .attr("text-anchor", "middle")
+        .attr("y", 95) // 80 for line end + 15 for spacing
+        .attr("dy", "0.5em")
+        .style("font-family", "SFMono-Regular, Consolas, 'Liberation Mono', Menlo, Courier, monospace")
+        .style("font-size", `20px`); // Match major tick font size
 
     // ====================================================================
     // 3. UI CONTROLS HANDLING
@@ -117,8 +139,37 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         minorTickVisualScale = Math.max(APP_CONFIG.minorTickEmergenceScale, minorTickVisualScale);
 
+
         if (isNaN(minorTickVisualScale) || !isFinite(minorTickVisualScale)) {
             minorTickVisualScale = APP_CONFIG.minorTickEmergenceScale;
+        }
+
+        // Update Center Marker
+        if (centerMarkerGroup && availableWidth > 0) {
+            const centerXPosition = availableWidth / 2;
+            const centerValue = currentScale.invert(centerXPosition);
+
+            centerMarkerLine
+                .attr("x1", centerXPosition)
+                .attr("x2", centerXPosition);
+
+            let centerValueFormatted;
+            if (tickData.minorStep > STATIC_CONFIG.epsilon) {
+                const reportingPrecision = tickData.minorStep / 10;
+                const numDecimalPlaces = Math.max(0, -Math.floor(Math.log10(Math.abs(reportingPrecision)) + STATIC_CONFIG.epsilon));
+                const formatter = d3.format(`.${Math.min(20, numDecimalPlaces)}f`);
+                centerValueFormatted = formatter(centerValue);
+            } else {
+                centerValueFormatted = d3.format(".10~g")(centerValue);
+            }
+
+            centerMarkerText
+                .attr("x", centerXPosition)
+                .text(centerValueFormatted);
+
+            centerMarkerGroup.style("visibility", "visible");
+        } else if (centerMarkerGroup) {
+            centerMarkerGroup.style("visibility", "hidden");
         }
 
         ticksContainer.selectAll("g.tick")
