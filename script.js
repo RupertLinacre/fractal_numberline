@@ -44,7 +44,8 @@ document.addEventListener('DOMContentLoaded', function () {
     let centerMarkerGroup, centerMarkerLine, centerMarkerText;
     let centerMarkerDragging = false;
     let centerMarkerDragStartX = null;
-    let centerMarkerDataValue = null; // The data value at the center marker
+    let centerMarkerDataValue = null; // The data value at the center marker (for drag)
+    let centerMarkerCurrentValue = null; // Persisted value for center marker
 
     // Create and style center marker elements
     centerMarkerGroup = chartArea.append("g")
@@ -72,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
         centerMarkerDragStartX = event.clientX;
         // Store the current data value at drag start
         if (centerMarkerGroup && availableWidth > 0) {
-            centerMarkerDataValue = centerMarkerGroup.datum() || null;
+            centerMarkerDataValue = centerMarkerCurrentValue;
         }
         // Prevent text selection
         document.body.style.userSelect = "none";
@@ -86,7 +87,6 @@ document.addEventListener('DOMContentLoaded', function () {
         // Use the current scale to convert dx (pixels) to data units
         const currentTransform = d3.zoomTransform(svgNode);
         const currentScale = currentTransform.rescaleX(baseScale);
-        const pxToData = (x) => currentScale.invert(x) - currentScale.invert(0);
         let newDataValue;
         if (centerMarkerDataValue === null) {
             // If not set, use the value at the center
@@ -99,8 +99,8 @@ document.addEventListener('DOMContentLoaded', function () {
         // Clamp to domain
         const domain = currentScale.domain();
         newDataValue = Math.max(domain[0], Math.min(domain[1], newDataValue));
-        // Store the new value in the group datum
-        centerMarkerGroup.datum(newDataValue);
+        // Persist the new value
+        centerMarkerCurrentValue = newDataValue;
         // Redraw axis with forced center marker
         updateAxis(currentTransform, newDataValue);
     });
@@ -200,14 +200,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Update Center Marker
         if (centerMarkerGroup && availableWidth > 0) {
-            // Use override value if provided, else use center of axis
+            // Use override value if provided, else use persisted value, else use center of axis
             let centerValue = overrideCenterValue;
             if (typeof centerValue !== "number" || !isFinite(centerValue)) {
-                centerValue = currentScale.invert(availableWidth / 2);
+                if (typeof centerMarkerCurrentValue === "number" && isFinite(centerMarkerCurrentValue)) {
+                    centerValue = centerMarkerCurrentValue;
+                } else {
+                    centerValue = currentScale.invert(availableWidth / 2);
+                }
             }
             // Clamp to domain
             const domain = currentScale.domain();
             centerValue = Math.max(domain[0], Math.min(domain[1], centerValue));
+            // Persist the value
+            centerMarkerCurrentValue = centerValue;
             // Store in datum for drag
             centerMarkerGroup.datum(centerValue);
             const centerXPosition = currentScale(centerValue);
@@ -325,6 +331,13 @@ document.addEventListener('DOMContentLoaded', function () {
             .attr("x2", availableWidth);
 
         let currentTransform = d3.zoomTransform(svgNode);
+
+        // On first load, set center marker to center of initial domain
+        if (centerMarkerCurrentValue === null) {
+            const initialDomain = baseScale.domain();
+            centerMarkerCurrentValue = (initialDomain[0] + initialDomain[1]) / 2;
+        }
+
         updateAxis(currentTransform);
     }
 
