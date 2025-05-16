@@ -42,10 +42,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Center marker SVG elements
     let centerMarkerGroup, centerMarkerLine, centerMarkerText;
+    let centerMarkerDragging = false;
+    let centerMarkerDragStartX = null;
+    let centerMarkerDataValue = null; // The data value at the center marker
 
     // Create and style center marker elements
     centerMarkerGroup = chartArea.append("g")
-        .attr("class", "center-marker");
+        .attr("class", "center-marker")
+        .style("cursor", "ew-resize");
 
     centerMarkerLine = centerMarkerGroup.append("line")
         .attr("stroke", "red")
@@ -60,6 +64,55 @@ document.addEventListener('DOMContentLoaded', function () {
         .attr("dy", "0.5em")
         .style("font-family", "SFMono-Regular, Consolas, 'Liberation Mono', Menlo, Courier, monospace")
         .style("font-size", `20px`); // Match major tick font size
+
+    // Drag event handlers for center marker
+    centerMarkerGroup.on("mousedown", function (event) {
+        event.stopPropagation();
+        centerMarkerDragging = true;
+        centerMarkerDragStartX = event.clientX;
+        // Store the current data value at drag start
+        if (centerMarkerGroup && availableWidth > 0) {
+            centerMarkerDataValue = centerMarkerGroup.datum() || null;
+        }
+        // Prevent text selection
+        document.body.style.userSelect = "none";
+    });
+
+    svg.on("mousemove.centerMarkerDrag", function (event) {
+        if (!centerMarkerDragging) return;
+        // Calculate new data value based on mouse movement
+        const mouseX = event.clientX;
+        const dx = mouseX - centerMarkerDragStartX;
+        // Use the current scale to convert dx (pixels) to data units
+        const currentTransform = d3.zoomTransform(svgNode);
+        const currentScale = currentTransform.rescaleX(baseScale);
+        const pxToData = (x) => currentScale.invert(x) - currentScale.invert(0);
+        let newDataValue;
+        if (centerMarkerDataValue === null) {
+            // If not set, use the value at the center
+            newDataValue = currentScale.invert(availableWidth / 2 + dx);
+        } else {
+            // Move from the original data value
+            const centerX = currentScale(centerMarkerDataValue);
+            newDataValue = currentScale.invert(centerX + dx);
+        }
+        // Clamp to domain
+        const domain = currentScale.domain();
+        newDataValue = Math.max(domain[0], Math.min(domain[1], newDataValue));
+        // Store the new value in the group datum
+        centerMarkerGroup.datum(newDataValue);
+        // Redraw axis with forced center marker
+        updateAxis(currentTransform, newDataValue);
+    });
+
+    svg.on("mouseup.centerMarkerDrag", function (event) {
+        if (centerMarkerDragging) {
+            centerMarkerDragging = false;
+            centerMarkerDragStartX = null;
+            centerMarkerDataValue = null;
+            document.body.style.userSelect = "";
+        }
+    });
 
     // ====================================================================
     // 3. UI CONTROLS HANDLING
@@ -125,7 +178,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // ====================================================================
     // 5. DRAWING / UPDATE AXIS
     // ====================================================================
-    function updateAxis(transform) {
+    // Allow optional override for center marker value
+    function updateAxis(transform, overrideCenterValue) {
         if (!availableWidth || availableWidth <= 0) return;
 
         const currentScale = transform.rescaleX(baseScale);
@@ -146,8 +200,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Update Center Marker
         if (centerMarkerGroup && availableWidth > 0) {
-            const centerXPosition = availableWidth / 2;
-            const centerValue = currentScale.invert(centerXPosition);
+            // Use override value if provided, else use center of axis
+            let centerValue = overrideCenterValue;
+            if (typeof centerValue !== "number" || !isFinite(centerValue)) {
+                centerValue = currentScale.invert(availableWidth / 2);
+            }
+            // Clamp to domain
+            const domain = currentScale.domain();
+            centerValue = Math.max(domain[0], Math.min(domain[1], centerValue));
+            // Store in datum for drag
+            centerMarkerGroup.datum(centerValue);
+            const centerXPosition = currentScale(centerValue);
 
             centerMarkerLine
                 .attr("x1", centerXPosition)
